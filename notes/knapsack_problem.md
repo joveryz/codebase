@@ -1,7 +1,18 @@
 # Knapsack Problem
 
 ## Reference
-- [CSDN](https://blog.csdn.net/qq_42898642/article/details/135432027)
+- [Leetcode notes - DP Knapsack Problem](https://blog.csdn.net/qq_42898642/article/details/135432027)
+!
+- [Introduction to Knapsack Problem, its Types and How to solve them](https://www.geeksforgeeks.org/introduction-to-knapsack-problem-its-types-and-how-to-solve-them/)
+
+Note that there are differences in the English and Chinese translations of the knapsack problem type.
+
+|English|Chinese|
+|-|-|
+|Fractional Knapsack Problem| N/A(不需要动态规划求解，不被视为背包问题)|
+|0/1 Knapsack Problem|0/1 背包问题|
+|Bounded Knapsack Problem|0/1 背包问题(被视为一种特殊情况，即在0/1背包问题的基础上添加了新的一个维度的限制)|
+|Unbounded Knapsack Problem|完全背包问题|
 
 ## 0/1 Knapsack Problem
 - [LeetCode 416. Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/description/)
@@ -84,4 +95,31 @@
         return sum - 2 * dp[target];
     }
   ```
-## Complete Knapsack Problem
+
+## Unbounded Knapsack Problem
+
+- Convert unbounded knapsack problem to 0/1 knapsack proble by adding the same `k` items.
+
+  ```cpp
+    int solve(vector<pair<int, int>>& items, int v) {
+        vector<vector<int>> dp(items.size() + 1, vector<int>(v + 1, 0));
+        for(int i = 1; i <= items.size(); ++i) {
+            for(int j = 1; j <= v; ++j) {
+                for(int k = 0; k <= v / items[i - 1].first; ++k) {
+                    if(j >= k * items[i - 1].first) {
+                        dp[i][j] = max(dp[i][j], dp[i - 1][j - k * items[i - 1].first] + k * items[i - 1].second);
+                    }
+                }
+            }
+        }
+
+        for(auto& arr : dp) {
+            for(auto i : arr) {
+                cout << i << " ";
+            }
+            cout << endl;
+        }
+        return dp[items.size()][v];
+    }
+  ```
+
